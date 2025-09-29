@@ -3,8 +3,10 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	_ "github.com/lib/pq"
 	"github.com/rs/cors"
@@ -20,7 +22,18 @@ var db *sql.DB
 
 func main() {
 	var err error
-	con := "host=localhost port=5432 user=postgres password=postgres dbname=todo_db sslmode=disable"
+	host := os.Getenv("DB_HOST")
+	port := os.Getenv("DB_PORT")
+	user := os.Getenv("DB_USER")
+	password := os.Getenv("DB_PASSWORD")
+	dbname := os.Getenv("DB_DATABASE")
+
+	con := fmt.Sprintf(
+		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+		host, port, user, password, dbname,
+	)
+
+	// con := "host=localhost port=5432 user=postgres password=postgres dbname=todo_db sslmode=disable"
 	db, err = sql.Open("postgres", con)
 	if err != nil {
 		log.Fatal(err)

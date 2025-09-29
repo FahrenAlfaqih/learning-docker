@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  todo-postgres:
+   image: postgres
+   ports:
+   - 5432:5432
+   environment:
+   - POSTGRES_USER=postgres
+   - POSTGRES_PASSWORD=postgres
+   - POSTGRES_DB=todo_db
+   volumes:
+   - ./postgres:/docker-entrypoint-initdb.d
+
+  todo-backend:
+   build: ./backend
+   ports:
+   - 8080:8080
+   environment:
+   - DB_USER=postgres
+   - DB_PASSWORD=postgres
+   - DB_HOST=todo-postgres
+   - DB_DATABASE=todo_db
+   - DB_PORT=5432
+   depends_on:
+   - todo-postgres
+   
+  todo-frontend:
+   build: ./frontend
+   ports:
+   - 3000:3000
